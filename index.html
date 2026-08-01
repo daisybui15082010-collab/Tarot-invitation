@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lời Mời Định Mệnh - Tarot Birthday</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: #0d0a14;
+            background-image: radial-gradient(circle at center, #1a1528 0%, #07050a 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Courier New', Courier, monospace;
+            overflow-x: hidden;
+            color: #e2d5f3;
+        }
+        /* Hiệu ứng sương mù/khói huyền bí phía sau */
+        .mystic-bg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: url('https://unsplash.com') center/cover no-repeat;
+            opacity: 0.05;
+            z-index: 1;
+            pointer-events: none;
+        }
+        /* Khung chứa bài Tarot */
+        .tarot-stage {
+            position: relative;
+            width: 340px;
+            height: 560px;
+            perspective: 1200px;
+            z-index: 2;
+        }
+        /* Hiệu ứng bay lơ lửng (Floating) */
+        .tarot-card {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            animation: floatAnimation 4s ease-in-out infinite;
+        }
+        @keyframes floatAnimation {
+            0% { transform: translateY(0px) rotateX(2deg) rotateY(1deg); }
+            50% { transform: translateY(-15px) rotateX(-2deg) rotateY(-1deg); }
+            100% { transform: translateY(0px) rotateX(2deg) rotateY(1deg); }
+        }
+        /* Trạng thái khi click lật bài */
+        .tarot-stage.flipped .tarot-card {
+            transform: rotateY(180deg) translateY(-10px);
+            animation: none; /* Dừng bay khi đã lật */
+        }
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 20px;
+            border: 3px solid #bfa15f;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7), 0 0 20px rgba(191, 161, 95, 0.2);
+            overflow: hidden;
+        }
+        /* MẶT SAU LÁ BÀI (Hiện ra đầu tiên) */
+        .card-back {
+            background: #151121;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .card-back-pattern {
+            width: 90%;
+            height: 94%;
+            border: 2px dashed #bfa15f;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(45deg, #1c172d 25%, transparent 25%), linear-gradient(-45deg, #1c172d 25%, transparent 25%);
+            background-size: 30px 30px;
+        }
+        .mystic-eye {
+            font-size: 60px;
+            color: #bfa15f;
+            margin-bottom: 20px;
+            text-shadow: 0 0 15px rgba(191, 161, 95, 0.6);
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 0.6; }
+            50% { opacity: 1; transform: scale(1.05); }
+            100% { opacity: 0.6; }
+        }
+        .hint-text {
+            color: #bfa15f;
+            font-size: 14px;
+            letter-spacing: 2px;
+            text-align: center;
+            text-transform: uppercase;
+            line-height: 1.5;
+        }
+        /* MẶT TRƯỚC LÁ BÀI (Hình bánh kem & thông tin) */
+        .card-front {
+            background: #110e1a;
+            transform: rotateY(180deg);
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+        }
+        .card-image-wrapper {
+            width: 100%;
+            height: 52%;
+            border-radius: 10px;
+            overflow: hidden;
+            border-bottom: 2px solid #bfa15f;
+        }
+        .card-front img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .card-content {
+            height: 48%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding-top: 12px;
+            text-align: center;
+        }
+        .card-title {
+            color: #bfa15f;
+            font-size: 20px;
+            letter-spacing: 3px;
+            font-weight: bold;
+        }
+        .card-subtitle {
+            font-size: 11px;
+            color: #8c7fa6;
+            margin-bottom: 8px;
+        }
+        .card-details {
+            font-size: 12px;
+            line-height: 1.5;
+            color: #dfd5f0;
+            text-align: left;
+            padding: 0 5px;
+        }
+        .highlight { color: #bfa15f; font-weight: bold; }
+        .rsvp-btn {
+            background: transparent;
+            border: 1px solid #bfa15f;
+            color: #bfa15f;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 12px;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+            margin-top: 8px;
+            font-weight: bold;
+        }
+        .rsvp-btn:hover {
+            background: #bfa15f;
+            color: #110e1a;
+            box-shadow: 0 0 10px rgba(191, 161, 95, 0.5);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="mystic-bg"></div>
+
+    <!-- Click vào khung này để kích hoạt lật bài -->
+    <div class="tarot-stage" onclick="this.classList.toggle('flipped')">
+        <div class="tarot-card">
+            
+            <!-- MẶT SAU -->
+            <div class="card-face card-back">
+                <div class="card-back-pattern">
+                    <div class="mystic-eye">🔮</div>
+                    <p class="hint-text">Chạm để giải mã<br>Vận Mệnh Tiệc Tùng</p>
+                </div>
+            </div>
+            
+            <!-- MẶT TRƯỚC -->
+            <div class="card-face card-front">
+                <div class="card-image-wrapper">
+                    <!-- Đã chèn sẵn link ảnh Tarot bánh kem gốc từ tôi -->
+                    <img src="https://imgbox.com" alt="The Cake Tarot">
+                </div>
+                <div class="card-content">
+                    <div>
+                        <div class="card-title">XV - THE CAKE</div>
+                        <div class="card-subtitle">THIỆP MỜI ĐỊNH MỆNH</div>
+                        <p class="card-details">
+                            Vũ trụ gửi tín hiệu! Bản đồ sao cho thấy các vì tinh tú sẽ hội tụ ăn mừng sinh nhật của tui:<br><br>
+                            📅 Ngày lập tinh: <span class="highlight">15.08.2026</span><br>
+                            ⏱ Giờ hoàng đạo: <span class="highlight">11h15</span><br>
+                            📍 Tọa độ hội tụ: <span class="highlight">Quán The Garden, số 03 Đ. Phân Khu Nam, Long An.</span><br>
+                            👗 Dresscode: <span class="highlight">Mặc gì cũng được, ưng bụng mình là được!</span>
+                        </p>
+                    </div>
+                    <a href="https://m.me" target="_blank" class="rsvp-btn">XÁC NHẬN THAM GIA</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+</html>
